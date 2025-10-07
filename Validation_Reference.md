@@ -35,15 +35,13 @@
 
 ## Key Principles
 
-**Defense in Depth:** Multiple layers of protection ensure valid game states.
-
 1. **Entry validation** - Check inputs before processing
 2. **Physics enforcement** - API design makes invalid states impossible
 3. **State protection** - Never expose mutable internal state
 4. **Automatic management** - Turn switching, game end detection are automatic
 5. **Configuration validation** - Catch impossible setups at creation
 
-**Critical insight:** Invalid operations never modify the board - they return errors while maintaining valid state.
+**Invalid operations never modify the board - they return errors while maintaining valid state.**
 
 ---
 
