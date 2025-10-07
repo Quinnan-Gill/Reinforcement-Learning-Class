@@ -55,7 +55,3 @@
 - **`reset()`** - Returns to clean initial state
 - **`_get_lowest_empty_row(col)`** - Enforces gravity (internal)
 - **`_check_win(row, col)`** - Validates win conditions (internal)
-
----
-
-*Generated for Connect Four Environment validation documentation*
