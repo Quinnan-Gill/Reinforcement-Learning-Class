@@ -18,10 +18,23 @@ class ConnectFourEnv:
                   (default: min(4, cols, rows) - automatically adjusts for small boards)
     """
     
-    def __init__(self, rows: int = 3, cols: int = 4, connect_n: Optional[int] = None):
+    def __init__(
+            self,
+            rows: int = 3,
+            cols: int = 4,
+            connect_n: Optional[int] = None,
+            reward: int=1.0,
+            penalty: int=0.0,
+            move_cost: int=0.0,
+        ):
+
         self.rows = rows
         self.cols = cols
         self.connect_n = connect_n if connect_n is not None else min(4, cols, rows)
+
+        self.reward = reward
+        self.penalty = penalty
+        self.move_cost = move_cost
         
         # Validate configuration
         if self.connect_n > max(rows, cols):
@@ -77,17 +90,17 @@ class ConnectFourEnv:
         if self._check_win(row, col):
             self.game_over = True
             self.winner = self.current_player
-            reward = 1.0
+            reward = self.reward
             done = True
         elif len(self.get_valid_actions()) == 0:
             # Draw
             self.game_over = True
             self.winner = 0
-            reward = 0.0
+            reward = self.penalty
             done = True
         else:
             # Game continues
-            reward = 0.0
+            reward = self.move_cost
             done = False
         
         # Switch players
