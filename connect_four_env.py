@@ -6,6 +6,10 @@ Supports configurable board sizes for reinforcement learning experiments
 import numpy as np
 from typing import List, Tuple, Optional
 
+PLAYERS = {
+    1: 'red',
+    -1: 'black'
+}
 
 class ConnectFourEnv:
     """
@@ -45,7 +49,13 @@ class ConnectFourEnv:
         self.game_over = False
         self.winner = None
         self.move_history = []
-        
+
+    def get_number_of_states(self) -> int:
+        return 3 ** (self.rows * self.cols)
+    
+    def get_number_of_actions(self) -> int:
+        return self.cols
+
     def reset(self) -> np.ndarray:
         """Reset the game to initial state."""
         self.board = np.zeros((self.rows, self.cols), dtype=np.int8)
