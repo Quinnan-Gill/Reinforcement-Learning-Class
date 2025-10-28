@@ -2,13 +2,13 @@ from argparse import ArgumentParser, Namespace
 from connect_four_env import ConnectFourEnv
 
 from q_learning import QLearning
+from monte_carlo import MonteCarlo
 
 def run_monte_carlo(env: ConnectFourEnv, opts: Namespace):
-    # TODO: Implement this
-    pass
+    agent = MonteCarlo(env, opts)
+    agent.train()
 
 def run_q_learning(env: ConnectFourEnv, opts: Namespace):
-    # TODO: Implement this
     agent = QLearning(env, opts)
     agent.train()
 
@@ -17,6 +17,7 @@ ALGO_MAP = {
     "monte-carlo": run_monte_carlo,
     "q-learning": run_q_learning,
 }
+
 def main():
     parser = ArgumentParser()
     parser.add_argument("--algo", required=True, choices=list(ALGO_MAP.keys()))
