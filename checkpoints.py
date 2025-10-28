@@ -6,6 +6,9 @@ from collections import defaultdict
 import numpy as np
 
 def save_checkpoint_numpy(filepath: str, data: np.ndarray):
+    """
+    Save a numpy array to a file
+    """
     np.save(filepath, data)
 
 def save_checkpoint_dict(filepath: str, data: Dict):
