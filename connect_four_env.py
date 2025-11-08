@@ -4,7 +4,7 @@ Supports configurable board sizes for reinforcement learning experiments
 """
 
 import numpy as np
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 
 PLAYERS = {
     1: 'red',
@@ -49,6 +49,23 @@ class ConnectFourEnv:
         self.game_over = False
         self.winner = None
         self.move_history = []
+
+    def get_parameters(self) -> Dict:
+        return {
+            "rows": self.rows,
+            "cols": self.cols,
+            "connect_n": self.connect_n,
+            "reward": self.reward,
+            "penalty": self.penalty,
+            "move_cost": self.move_cost
+        }
+
+    def __eq__(self, other: "ConnectFourEnv"):
+        return (
+            self.rows == other.rows and
+            self.cols == other.cols and
+            self.connect_n == other.connect_n
+        )
 
     def get_number_of_states(self) -> int:
         return 3 ** (self.rows * self.cols)

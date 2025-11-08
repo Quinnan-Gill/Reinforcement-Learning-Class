@@ -5,37 +5,36 @@ from datetime import datetime
 from connect_four_env import ConnectFourEnv, PLAYERS
 from rl_agent import RLModel, random_argmax
 
-class QLearning(RLModel):
+class Sarsa(RLModel):
     def __init__(self, env: ConnectFourEnv, opts: Namespace = None):
         super().__init__(env, opts)
 
     def name(self) -> str:
-        return "q-learning"
+        return "sarsa"
 
     def get_agent_name(self) -> str:
         now_str = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
-        return f"q-learning--{now_str}.save"
+        return f"sarsa--{now_str}.save"
 
     def train_step(self, episode: int) -> int:
         self.env.reset()
         state = self.env.get_state_key()
         current_player = self.env.current_player
+        action = self.select_action(state, current_player)
         done = False
 
-        total_reward = {
-            "red": 0.0,
-            "black": 0.0
-        }
+        total_reward = defaultdict(float)
         while not done:
-            action = self.select_action(state, current_player)
-
             _, reward, done, _ = self.env.make_move(action)
             next_state = self.env.get_state_key()
+            next_action = self.select_action(state, current_player)
 
-            best_next_action = random_argmax(self.get_q(current_player, state))
-            td_target = reward + self.gamma * (
-                self.get_q(current_player, state, action=best_next_action)
-            )
+            if done:
+                td_target = reward
+            else:
+                td_target = reward + self.gamma * (
+                    self.get_q(current_player, state, action=next_action)
+                )
             td_error = td_target - (
                 self.get_q(current_player, state, action=action)
             )
@@ -45,6 +44,7 @@ class QLearning(RLModel):
 
             current_player = self.env.current_player
             state = next_state
+            action = next_action
         return total_reward
     
     def eval_step(self, env: ConnectFourEnv):
@@ -54,5 +54,3 @@ class QLearning(RLModel):
         action = random_argmax(self.get_q(current_player, state))
 
         return action
-
-        

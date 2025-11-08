@@ -1,5 +1,5 @@
 import os
-import shutil
+import json
 import tarfile
 from typing import Union, Dict
 from collections import defaultdict
@@ -8,75 +8,71 @@ import numpy as np
 def save_checkpoint_numpy(filepath: str, data: np.ndarray):
     np.save(filepath, data)
 
-def save_checkpoint_dict(filepath: str, data: Dict):
+def save_params(workspace: str, params: Dict):
+    param_file = os.path.join(workspace, "parameters.json")
+    with open(param_file, 'w') as fout:
+        json.dump(params, fout, indent=2)
+
+def load_params(workspace: str) -> Dict:
+    if not os.path.exists(workspace):
+        raise ValueError(f"ERROR: Unable to find workspace {workspace}")
+
+    param_file = os.path.join(workspace, "parameters.json")
+    if not os.path.exists(param_file):
+        raise ValueError(f"ERROR: Unable to find parameters {param_file}")
+
+    with open(param_file, 'r') as fin:
+        return json.load(fin)
+
+def save_checkpoint_dict(workspace: str, data: Dict):
     # remove default dict
     normal_dict = {}
-    files_to_tar = []
-    
-    # Extract just the filename without directory
-    base_filename = os.path.basename(filepath)
-    tar_dir = os.path.dirname(filepath)
-    if not tar_dir:
-        tar_dir = "."
     
     for player, q in data.items():
         normal_dict[player] = dict(q)
         # Save with just the base filename
-        temp_file = f"{base_filename}.{player}.npz"
-        temp_path = os.path.join(tar_dir, temp_file)
-        np.savez(temp_path, **dict(q))
-        files_to_tar.append((temp_path, temp_file))  # (full_path, arcname)
-    
-    with tarfile.open(filepath, "w") as tar:
-        for file_path, arcname in files_to_tar:
-            tar.add(file_path, arcname=arcname)  # Store with just filename, not full path
-    
-    for file_path, _ in files_to_tar:
-        os.remove(file_path)
-    
-def load_checkpoint_dict(filepath: str):
-    try:
-        # Get the directory where the tar file is located
-        tar_dir = os.path.dirname(filepath)
-        if not tar_dir:
-            tar_dir = "."
-            
-        with tarfile.open(filepath, 'r') as tar:
-            # Extract all contents to the tar file's directory
-            tar.extractall(path=tar_dir)
-        
-        # Build paths to extracted files
-        red_file = f"{filepath}.red.npz"
-        black_file = f"{filepath}.black.npz"
-        
-        if not os.path.exists(red_file):
-            raise ValueError(f"Error opening {red_file}")
-        
-        # Load and immediately convert to dict to close the file
-        q_red_data = np.load(red_file, allow_pickle=True)
-        q_red = {key: q_red_data[key] for key in q_red_data.files}
-        q_red_data.close()  # Explicitly close
-        os.remove(red_file)
+        checkpoint_file = os.path.join(workspace, f"{player}.npz")
+        np.savez(checkpoint_file, **dict(q))
 
-        if not os.path.exists(black_file):
-            raise ValueError(f"Error opening {black_file}")
-        
-        q_black_data = np.load(black_file, allow_pickle=True)
-        q_black = {key: q_black_data[key] for key in q_black_data.files}
-        q_black_data.close()  # Explicitly close
-        os.remove(black_file)
-        
-        return {
-            'red': q_red,
-            'black': q_black
-        }
-        
-    except tarfile.ReadError as e:
-        raise ValueError(f"Error opening or reading tar file: {e}")
-    except FileNotFoundError:
-        raise ValueError(f"Error: Tar file '{filepath}' not found.")
-    except Exception as e:
-        raise ValueError(f"An unexpected error occurred: {e}")
+def save_learning_curve(workspace: str, player: str, data: np.ndarray):
+    if workspace:
+        np.save(
+            file=os.path.join(workspace, f"{player}_learning_curve"),
+            arr=data
+        )
+
+def load_checkpoint_dict(workspace: str, action_size: int):    
+    # Build paths to extracted files
+    red_file = os.path.join(workspace, "best_red_agent.npy")
+    black_file = os.path.join(workspace, "best_black_agent.npy")
+
+    if not os.path.exists(red_file):
+        raise ValueError(f"ERROR: Unable to find {red_file}")
+    
+    # Load and immediately convert to dict to close the file
+    q_red_data = np.load(red_file, allow_pickle=True)
+    q_red = defaultdict(
+        lambda: np.zeros(action_size),
+        q_red_data[()]
+    )
+    # {key: q_red_data[key] for key in q_red_data}
+    # q_red_data.close()  # Explicitly close
+
+    if not os.path.exists(black_file):
+        raise ValueError(f"ERROR: Unable to find {black_file}")
+    
+    q_black_data = np.load(black_file, allow_pickle=True)
+    # q_black = {key: q_black_data[key] for key in q_black_data}
+    q_black = defaultdict(
+        lambda: np.zeros(action_size),
+        q_black_data[()]
+    )
+    # q_black_data.close()  # Explicitly close
+    
+    return {
+        'red': q_red,
+        'black': q_black
+    }
 
 def save_checkpoint(filepath: str, data: Union[np.ndarray, Dict]):
     if isinstance(data, np.ndarray):
@@ -86,12 +82,12 @@ def save_checkpoint(filepath: str, data: Union[np.ndarray, Dict]):
     else:
         raise NotImplementedError(f"Error: Unable to handle save of type {type(data)}")
 
-def load_checkpoint(filepath: str) -> np.ndarray:
+def load_checkpoint(filepath: str, action_size: int=6) -> np.ndarray:
     if not os.path.exists(filepath):
         raise ValueError(f"ERROR: Unable to find {filepath}")
 
     if tarfile.is_tarfile(filepath):
-        return load_checkpoint_dict(filepath)
+        return load_checkpoint_dict(filepath, action_size)
     else:
         raise NotImplementedError("Implement other checkpoint methods")
 
