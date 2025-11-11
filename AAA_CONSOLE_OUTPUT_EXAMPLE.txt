@@ -1,0 +1,809 @@
+PS C:\Users\rnuck\OneDrive\Desktop\JHU\Fall2025\Reinforcement\SemesterProject\Reinforcement-Learning-Class> python run_project.py --rows 3 --columns 4 --connect-n 3 --episodes 5000
+======================================================================
+CONNECT FOUR RL MASTER PIPELINE
+======================================================================
+Environment: 3x4 Connect-3
+Agents: q-learning, sarsa, monte-carlo
+Training mode: curriculum
+Episodes: 5000
+Output directory: results
+======================================================================
+
+======================================================================
+PHASE 1: TRAINING
+======================================================================
+
+Starting training: q-learning
+
+======================================================================
+Training Q-LEARNING - Curriculum Mode
+======================================================================
+Output: results\training\q-learning_curriculum_20251111_124929
+Episodes per phase: 5000
+Curriculum iterations: 3
+
+--- Phase 1: Training vs Random Opponent ---
+Clearning AND Creating results\training\q-learning_curriculum_20251111_124929\phase1_vsrandom
+Phase 1 Episode 5000/5000
+✓ Phase 1 complete
+
+--- Phase 2: Training via Self-Play ---
+Clearning AND Creating results\training\q-learning_curriculum_20251111_124929\phase2_selfplay
+Phase 2 Episode 5000/5000
+✓ Phase 2 complete
+
+--- Phase 3: Training vs Phase 1 Checkpoint ---
+Clearning AND Creating results\training\q-learning_curriculum_20251111_124929\phase3_vscheckpoint
+CheckpointAgent loaded from: results\training\q-learning_curriculum_20251111_124929\phase1_vsrandom
+Playing as: black (player -1)
+Phase 3 Episode 5000/5000
+✓ Phase 3 complete
+
+--- Iteration 1: Training vs Previous Best ---
+Clearning AND Creating results\training\q-learning_curriculum_20251111_124929\iteration1
+CheckpointAgent loaded from: results\training\q-learning_curriculum_20251111_124929\phase3_vscheckpoint
+Playing as: black (player -1)
+Iteration 1 Episode 5000/5000
+✓ Iteration 1 complete
+
+--- Iteration 2: Training vs Previous Best ---
+Clearning AND Creating results\training\q-learning_curriculum_20251111_124929\iteration2
+CheckpointAgent loaded from: results\training\q-learning_curriculum_20251111_124929\iteration1
+Playing as: black (player -1)
+Iteration 2 Episode 5000/5000
+✓ Iteration 2 complete
+
+--- Iteration 3: Training vs Previous Best ---
+Clearning AND Creating results\training\q-learning_curriculum_20251111_124929\iteration3
+CheckpointAgent loaded from: results\training\q-learning_curriculum_20251111_124929\iteration2
+Playing as: black (player -1)
+Iteration 3 Episode 5000/5000
+✓ Iteration 3 complete
+
+✓ Full curriculum training complete (6 phases total)
+✓ Final checkpoint: results\training\q-learning_curriculum_20251111_124929\iteration3
+✓ q-learning training completed in 5.72 seconds (0.1 minutes)
+
+Starting training: sarsa
+
+======================================================================
+Training SARSA - Curriculum Mode
+======================================================================
+Output: results\training\sarsa_curriculum_20251111_124935
+Episodes per phase: 5000
+Curriculum iterations: 3
+
+--- Phase 1: Training vs Random Opponent ---
+Clearning AND Creating results\training\sarsa_curriculum_20251111_124935\phase1_vsrandom
+Phase 1 Episode 5000/5000
+✓ Phase 1 complete
+
+--- Phase 2: Training via Self-Play ---
+Clearning AND Creating results\training\sarsa_curriculum_20251111_124935\phase2_selfplay
+Phase 2 Episode 5000/5000
+✓ Phase 2 complete
+
+--- Phase 3: Training vs Phase 1 Checkpoint ---
+Clearning AND Creating results\training\sarsa_curriculum_20251111_124935\phase3_vscheckpoint
+CheckpointAgent loaded from: results\training\sarsa_curriculum_20251111_124935\phase1_vsrandom
+Playing as: black (player -1)
+Phase 3 Episode 5000/5000
+✓ Phase 3 complete
+
+--- Iteration 1: Training vs Previous Best ---
+Clearning AND Creating results\training\sarsa_curriculum_20251111_124935\iteration1
+CheckpointAgent loaded from: results\training\sarsa_curriculum_20251111_124935\phase3_vscheckpoint
+Playing as: black (player -1)
+Iteration 1 Episode 5000/5000
+✓ Iteration 1 complete
+
+--- Iteration 2: Training vs Previous Best ---
+Clearning AND Creating results\training\sarsa_curriculum_20251111_124935\iteration2
+CheckpointAgent loaded from: results\training\sarsa_curriculum_20251111_124935\iteration1
+Playing as: black (player -1)
+Iteration 2 Episode 5000/5000
+✓ Iteration 2 complete
+
+--- Iteration 3: Training vs Previous Best ---
+Clearning AND Creating results\training\sarsa_curriculum_20251111_124935\iteration3
+CheckpointAgent loaded from: results\training\sarsa_curriculum_20251111_124935\iteration2
+Playing as: black (player -1)
+Iteration 3 Episode 5000/5000
+✓ Iteration 3 complete
+
+✓ Full curriculum training complete (6 phases total)
+✓ Final checkpoint: results\training\sarsa_curriculum_20251111_124935\iteration3
+✓ sarsa training completed in 5.77 seconds (0.1 minutes)
+
+Starting training: monte-carlo
+
+======================================================================
+Training MONTE CARLO - Curriculum Mode
+======================================================================
+Output: results\training\monte-carlo_curriculum_20251111_124940
+Episodes per phase: 5000
+Curriculum iterations: 3
+
+--- Phase 1: Training vs Random Opponent ---
+Clearning AND Creating results\training\monte-carlo_curriculum_20251111_124940\phase1_vsrandom
+
+Training Monte Carlo - vs Opponent (Phase1-Random)
+Episode 5000 / 5000
+Done training Monte Carlo - vs Opponent (Phase1-Random)
+Saved checkpoint to results\training\monte-carlo_curriculum_20251111_124940\phase1_vsrandom\monte-carlo--phase1-random--2025-11-11--12-49-41.save
+✓ Phase 1 complete
+
+--- Phase 2: Training via Self-Play ---
+Clearning AND Creating results\training\monte-carlo_curriculum_20251111_124940\phase2_selfplay
+
+Training Monte Carlo - Self-Play (Phase2-SelfPlay)
+Episode 5000 / 5000
+Done training Monte Carlo - Self-Play (Phase2-SelfPlay)
+Saved checkpoint to results\training\monte-carlo_curriculum_20251111_124940\phase2_selfplay\monte-carlo--phase2-selfplay--2025-11-11--12-49-42.save
+✓ Phase 2 complete
+
+--- Phase 3: Training vs Phase 1 Checkpoint ---
+Clearning AND Creating results\training\monte-carlo_curriculum_20251111_124940\phase3_vscheckpoint
+CheckpointAgent loaded from: results\training\monte-carlo_curriculum_20251111_124940\phase1_vsrandom
+Playing as: black (player -1)
+
+Training Monte Carlo - vs Opponent (Phase3-VsCheckpoint)
+Episode 5000 / 5000
+Done training Monte Carlo - vs Opponent (Phase3-VsCheckpoint)
+Saved checkpoint to results\training\monte-carlo_curriculum_20251111_124940\phase3_vscheckpoint\monte-carlo--phase3-vscheckpoint--2025-11-11--12-49-43.save
+✓ Phase 3 complete
+
+--- Iteration 1: Training vs Previous Best ---
+Clearning AND Creating results\training\monte-carlo_curriculum_20251111_124940\iteration1
+CheckpointAgent loaded from: results\training\monte-carlo_curriculum_20251111_124940\phase3_vscheckpoint
+Playing as: black (player -1)
+
+Training Monte Carlo - vs Opponent (Iteration1)
+Episode 5000 / 5000
+Done training Monte Carlo - vs Opponent (Iteration1)
+Saved checkpoint to results\training\monte-carlo_curriculum_20251111_124940\iteration1\monte-carlo--iteration1--2025-11-11--12-49-43.save
+✓ Iteration 1 complete
+
+--- Iteration 2: Training vs Previous Best ---
+Clearning AND Creating results\training\monte-carlo_curriculum_20251111_124940\iteration2
+CheckpointAgent loaded from: results\training\monte-carlo_curriculum_20251111_124940\iteration1
+Playing as: black (player -1)
+
+Training Monte Carlo - vs Opponent (Iteration2)
+Episode 5000 / 5000
+Done training Monte Carlo - vs Opponent (Iteration2)
+Saved checkpoint to results\training\monte-carlo_curriculum_20251111_124940\iteration2\monte-carlo--iteration2--2025-11-11--12-49-44.save
+✓ Iteration 2 complete
+
+--- Iteration 3: Training vs Previous Best ---
+Clearning AND Creating results\training\monte-carlo_curriculum_20251111_124940\iteration3
+CheckpointAgent loaded from: results\training\monte-carlo_curriculum_20251111_124940\iteration2
+Playing as: black (player -1)
+
+Training Monte Carlo - vs Opponent (Iteration3)
+Episode 5000 / 5000
+Done training Monte Carlo - vs Opponent (Iteration3)
+Saved checkpoint to results\training\monte-carlo_curriculum_20251111_124940\iteration3\monte-carlo--iteration3--2025-11-11--12-49-44.save
+✓ Iteration 3 complete
+
+✓ Full curriculum training complete (6 phases total)
+✓ Final checkpoint: results\training\monte-carlo_curriculum_20251111_124940\iteration3
+✓ monte-carlo training completed in 4.01 seconds (0.1 minutes)
+
+======================================================================
+TRAINING COMPLETE
+======================================================================
+  q-learning: results\training\q-learning_curriculum_20251111_124929\iteration3
+    Training time: 5.72s (0.1 min)
+  sarsa: results\training\sarsa_curriculum_20251111_124935\iteration3
+    Training time: 5.77s (0.1 min)
+  monte-carlo: results\training\monte-carlo_curriculum_20251111_124940\iteration3
+    Training time: 4.01s (0.1 min)
+
+======================================================================
+PHASE 2: EVALUATION
+======================================================================
+
+======================================================================
+Running Pairwise Evaluations
+======================================================================
+Agents: ['q-learning', 'sarsa', 'monte-carlo']
+Games per matchup: 100
+Loaded agent 'q-learning' from results\training\q-learning_curriculum_20251111_124929\iteration3
+Loaded agent 'sarsa' from results\training\sarsa_curriculum_20251111_124935\iteration3
+Loaded agent 'monte-carlo' from results\training\monte-carlo_curriculum_20251111_124940\iteration3
+
+--- Evaluating: q-learning_vs_sarsa ---
+Game 100/100
+
+Matchup Results: q-learning (red) vs sarsa (black)
+  Red wins:     63 (63.0%)
+  Black wins:   33 (33.0%)
+  Ties:          4 (4.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+q-learning (Red) - Average Moves:
+  Wins:     8.1 ±  2.1 moves
+  Losses:   9.2 ±  1.5 moves
+  Ties:    12.0 ±  0.0 moves
+
+sarsa (Black) - Average Moves:
+  Wins:     9.2 ±  1.5 moves
+  Losses:   8.1 ±  2.1 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+q-learning (Red):
+  Overall Score:        47.2 / 100
+  Winning Move Score:   21.3 / 50
+  Blocking Score:       25.9 / 50
+  Blunder Rate:        30.3%
+  Details: Won 63/148 opportunities, Blocked 59/114 threats, 140 blunders in 462 moves
+
+sarsa (Black):
+  Overall Score:        48.7 / 100
+  Winning Move Score:   27.0 / 50
+  Blocking Score:       21.7 / 50
+  Blunder Rate:        36.8%
+  Details: Won 33/61 opportunities, Blocked 91/210 threats, 147 blunders in 399 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+Generating comprehensive visualization report...
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_sarsa\plots\win_rates_q-learning_vs_sarsa.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_sarsa\plots\game_lengths_q-learning_vs_sarsa.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_sarsa\plots\win_rate_over_time_q-learning_vs_sarsa.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_sarsa\plots\opening_moves.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_sarsa\plots\tactical_accuracy_q-learning_vs_sarsa.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_sarsa\plots\column_usage_q-learning_vs_sarsa.png
+
+All visualizations saved to: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_sarsa\plots
+✓ q-learning_vs_sarsa complete
+
+--- Evaluating: q-learning_vs_monte-carlo ---
+Game 100/100
+
+Matchup Results: q-learning (red) vs monte-carlo (black)
+  Red wins:     62 (62.0%)
+  Black wins:   34 (34.0%)
+  Ties:          4 (4.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+q-learning (Red) - Average Moves:
+  Wins:     8.0 ±  2.2 moves
+  Losses:   9.0 ±  1.6 moves
+  Ties:    12.0 ±  0.0 moves
+
+monte-carlo (Black) - Average Moves:
+  Wins:     9.0 ±  1.6 moves
+  Losses:   8.0 ±  2.2 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+q-learning (Red):
+  Overall Score:        40.2 / 100
+  Winning Move Score:   20.4 / 50
+  Blocking Score:       19.8 / 50
+  Blunder Rate:        35.0%
+  Details: Won 62/152 opportunities, Blocked 46/116 threats, 160 blunders in 457 moves
+
+monte-carlo (Black):
+  Overall Score:        44.0 / 100
+  Winning Move Score:   22.7 / 50
+  Blocking Score:       21.3 / 50
+  Blunder Rate:        41.8%
+  Details: Won 34/75 opportunities, Blocked 92/216 threats, 165 blunders in 395 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+Generating comprehensive visualization report...
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_monte-carlo\plots\win_rates_q-learning_vs_monte-carlo.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_monte-carlo\plots\game_lengths_q-learning_vs_monte-carlo.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_monte-carlo\plots\win_rate_over_time_q-learning_vs_monte-carlo.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_monte-carlo\plots\opening_moves.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_monte-carlo\plots\tactical_accuracy_q-learning_vs_monte-carlo.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_monte-carlo\plots\column_usage_q-learning_vs_monte-carlo.png
+
+All visualizations saved to: results\evaluations\pairwise_evaluations_20251111_124944\q-learning_vs_monte-carlo\plots
+✓ q-learning_vs_monte-carlo complete
+
+--- Evaluating: sarsa_vs_monte-carlo ---
+Game 100/100
+
+Matchup Results: sarsa (red) vs monte-carlo (black)
+  Red wins:     50 (50.0%)
+  Black wins:   46 (46.0%)
+  Ties:          4 (4.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+sarsa (Red) - Average Moves:
+  Wins:     8.2 ±  2.4 moves
+  Losses:   9.5 ±  1.7 moves
+  Ties:    12.0 ±  0.0 moves
+
+monte-carlo (Black) - Average Moves:
+  Wins:     9.5 ±  1.7 moves
+  Losses:   8.2 ±  2.4 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+sarsa (Red):
+  Overall Score:        40.9 / 100
+  Winning Move Score:   18.9 / 50
+  Blocking Score:       22.0 / 50
+  Blunder Rate:        31.1%
+  Details: Won 50/132 opportunities, Blocked 51/116 threats, 147 blunders in 472 moves
+
+monte-carlo (Black):
+  Overall Score:        52.0 / 100
+  Winning Move Score:   29.1 / 50
+  Blocking Score:       22.9 / 50
+  Blunder Rate:        33.9%
+  Details: Won 46/79 opportunities, Blocked 93/203 threats, 143 blunders in 422 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+Generating comprehensive visualization report...
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\sarsa_vs_monte-carlo\plots\win_rates_sarsa_vs_monte-carlo.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\sarsa_vs_monte-carlo\plots\game_lengths_sarsa_vs_monte-carlo.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\sarsa_vs_monte-carlo\plots\win_rate_over_time_sarsa_vs_monte-carlo.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\sarsa_vs_monte-carlo\plots\opening_moves.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\sarsa_vs_monte-carlo\plots\tactical_accuracy_sarsa_vs_monte-carlo.png
+Saved plot: results\evaluations\pairwise_evaluations_20251111_124944\sarsa_vs_monte-carlo\plots\column_usage_sarsa_vs_monte-carlo.png
+
+All visualizations saved to: results\evaluations\pairwise_evaluations_20251111_124944\sarsa_vs_monte-carlo\plots
+✓ sarsa_vs_monte-carlo complete
+
+Results saved to: results\evaluations\pairwise_evaluations_20251111_124944\all_pairwise_results.json
+
+✓ All pairwise evaluations complete
+✓ Results saved to: results\evaluations\pairwise_evaluations_20251111_124944
+
+======================================================================
+Running Tournament
+======================================================================
+Agents: ['q-learning', 'sarsa', 'monte-carlo']
+Games per matchup: 100
+Loaded agent 'q-learning' from results\training\q-learning_curriculum_20251111_124929\iteration3
+Loaded agent 'sarsa' from results\training\sarsa_curriculum_20251111_124935\iteration3
+Loaded agent 'monte-carlo' from results\training\monte-carlo_curriculum_20251111_124940\iteration3
+
+============================================================
+Starting Tournament with 3 agents
+============================================================
+
+
+Matchup 1: q-learning (red) vs sarsa (black)
+Game 100/100
+
+Matchup Results: q-learning (red) vs sarsa (black)
+  Red wins:     61 (61.0%)
+  Black wins:   35 (35.0%)
+  Ties:          4 (4.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+q-learning (Red) - Average Moves:
+  Wins:     8.2 ±  2.2 moves
+  Losses:   9.0 ±  2.0 moves
+  Ties:    12.0 ±  0.0 moves
+
+sarsa (Black) - Average Moves:
+  Wins:     9.0 ±  2.0 moves
+  Losses:   8.2 ±  2.2 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+q-learning (Red):
+  Overall Score:        44.2 / 100
+  Winning Move Score:   20.7 / 50
+  Blocking Score:       23.5 / 50
+  Blunder Rate:        31.6%
+  Details: Won 61/147 opportunities, Blocked 53/113 threats, 146 blunders in 462 moves
+
+sarsa (Black):
+  Overall Score:        44.7 / 100
+  Winning Move Score:   23.3 / 50
+  Blocking Score:       21.4 / 50
+  Blunder Rate:        38.7%
+  Details: Won 35/75 opportunities, Blocked 86/201 threats, 155 blunders in 401 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+Matchup 2: sarsa (red) vs q-learning (black)
+Game 100/100
+
+Matchup Results: sarsa (red) vs q-learning (black)
+  Red wins:     54 (54.0%)
+  Black wins:   39 (39.0%)
+  Ties:          7 (7.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+sarsa (Red) - Average Moves:
+  Wins:     8.4 ±  2.2 moves
+  Losses:   9.0 ±  1.5 moves
+  Ties:    12.0 ±  0.0 moves
+
+q-learning (Black) - Average Moves:
+  Wins:     9.0 ±  1.5 moves
+  Losses:   8.4 ±  2.2 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+sarsa (Red):
+  Overall Score:        43.3 / 100
+  Winning Move Score:   20.1 / 50
+  Blocking Score:       23.1 / 50
+  Blunder Rate:        32.3%
+  Details: Won 54/134 opportunities, Blocked 62/134 threats, 152 blunders in 471 moves
+
+q-learning (Black):
+  Overall Score:        47.4 / 100
+  Winning Move Score:   22.7 / 50
+  Blocking Score:       24.8 / 50
+  Blunder Rate:        35.7%
+  Details: Won 39/86 opportunities, Blocked 100/202 threats, 149 blunders in 417 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+Matchup 3: q-learning (red) vs monte-carlo (black)
+Game 100/100
+
+Matchup Results: q-learning (red) vs monte-carlo (black)
+  Red wins:     71 (71.0%)
+  Black wins:   25 (25.0%)
+  Ties:          4 (4.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+q-learning (Red) - Average Moves:
+  Wins:     8.4 ±  2.1 moves
+  Losses:   9.6 ±  1.9 moves
+  Ties:    12.0 ±  0.0 moves
+
+monte-carlo (Black) - Average Moves:
+  Wins:     9.6 ±  1.9 moves
+  Losses:   8.4 ±  2.1 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+q-learning (Red):
+  Overall Score:        49.6 / 100
+  Winning Move Score:   23.5 / 50
+  Blocking Score:       26.1 / 50
+  Blunder Rate:        28.1%
+  Details: Won 71/151 opportunities, Blocked 59/113 threats, 134 blunders in 477 moves
+
+monte-carlo (Black):
+  Overall Score:        42.1 / 100
+  Winning Move Score:   20.5 / 50
+  Blocking Score:       21.6 / 50
+  Blunder Rate:        36.0%
+  Details: Won 25/61 opportunities, Blocked 84/194 threats, 146 blunders in 406 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+Matchup 4: monte-carlo (red) vs q-learning (black)
+Game 100/100
+
+Matchup Results: monte-carlo (red) vs q-learning (black)
+  Red wins:     61 (61.0%)
+  Black wins:   33 (33.0%)
+  Ties:          6 (6.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+monte-carlo (Red) - Average Moves:
+  Wins:     7.5 ±  2.3 moves
+  Losses:   9.2 ±  1.5 moves
+  Ties:    12.0 ±  0.0 moves
+
+q-learning (Black) - Average Moves:
+  Wins:     9.2 ±  1.5 moves
+  Losses:   7.5 ±  2.3 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+monte-carlo (Red):
+  Overall Score:        44.6 / 100
+  Winning Move Score:   23.3 / 50
+  Blocking Score:       21.3 / 50
+  Blunder Rate:        30.5%
+  Details: Won 61/131 opportunities, Blocked 49/115 threats, 136 blunders in 446 moves
+
+q-learning (Black):
+  Overall Score:        44.2 / 100
+  Winning Move Score:   22.9 / 50
+  Blocking Score:       21.3 / 50
+  Blunder Rate:        38.2%
+  Details: Won 33/72 opportunities, Blocked 80/188 threats, 147 blunders in 385 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+Matchup 5: sarsa (red) vs monte-carlo (black)
+Game 100/100
+
+Matchup Results: sarsa (red) vs monte-carlo (black)
+  Red wins:     57 (57.0%)
+  Black wins:   39 (39.0%)
+  Ties:          4 (4.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+sarsa (Red) - Average Moves:
+  Wins:     8.0 ±  2.2 moves
+  Losses:   9.4 ±  1.6 moves
+  Ties:    12.0 ±  0.0 moves
+
+monte-carlo (Black) - Average Moves:
+  Wins:     9.4 ±  1.6 moves
+  Losses:   8.0 ±  2.2 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+sarsa (Red):
+  Overall Score:        46.9 / 100
+  Winning Move Score:   24.2 / 50
+  Blocking Score:       22.7 / 50
+  Blunder Rate:        26.0%
+  Details: Won 57/118 opportunities, Blocked 50/110 threats, 121 blunders in 465 moves
+
+monte-carlo (Black):
+  Overall Score:        53.5 / 100
+  Winning Move Score:   27.9 / 50
+  Blocking Score:       25.7 / 50
+  Blunder Rate:        29.4%
+  Details: Won 39/70 opportunities, Blocked 94/183 threats, 120 blunders in 408 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+Matchup 6: monte-carlo (red) vs sarsa (black)
+Game 100/100
+
+Matchup Results: monte-carlo (red) vs sarsa (black)
+  Red wins:     64 (64.0%)
+  Black wins:   33 (33.0%)
+  Ties:          3 (3.0%)
+
+Analyzing game quality...
+
+======================================================================
+OUTCOME-SPECIFIC METRICS
+======================================================================
+
+monte-carlo (Red) - Average Moves:
+  Wins:     8.5 ±  2.1 moves
+  Losses:   8.5 ±  1.8 moves
+  Ties:    12.0 ±  0.0 moves
+
+sarsa (Black) - Average Moves:
+  Wins:     8.5 ±  1.8 moves
+  Losses:   8.5 ±  2.1 moves
+  Ties:    12.0 ±  0.0 moves
+
+Interpretation:
+  - Lower "wins" = More efficient victories
+  - Higher "losses" = Prolonged losing games (opponent took longer to win)
+  - Consistent tie length suggests deterministic play patterns
+======================================================================
+
+
+======================================================================
+MOVE QUALITY SCORES (0-100 scale)
+======================================================================
+
+monte-carlo (Red):
+  Overall Score:        44.1 / 100
+  Winning Move Score:   22.2 / 50
+  Blocking Score:       21.9 / 50
+  Blunder Rate:        33.0%
+  Details: Won 64/144 opportunities, Blocked 57/130 threats, 153 blunders in 463 moves
+
+sarsa (Black):
+  Overall Score:        44.7 / 100
+  Winning Move Score:   23.9 / 50
+  Blocking Score:       20.8 / 50
+  Blunder Rate:        37.6%
+  Details: Won 33/69 opportunities, Blocked 81/195 threats, 150 blunders in 399 moves
+
+Score Interpretation:
+  90-100: Excellent tactical play
+  75-89:  Good tactical awareness
+  60-74:  Moderate tactical skill
+  <60:    Needs improvement
+======================================================================
+
+
+============================================================
+Tournament Rankings:
+============================================================
+  1. q-learning                     - 204 wins
+  2. monte-carlo                    - 189 wins
+  3. sarsa                          - 179 wins
+Saved plot: results\evaluations\tournament_20251111_124950\plots\tournament_matrix.png
+
+Results saved to: results\evaluations\tournament_20251111_124950\tournament_results.json
+
+✓ Tournament complete
+✓ Results saved to: results\evaluations\tournament_20251111_124950
+
+✓ Summary report saved to: results\SUMMARY_REPORT.txt
+
+======================================================================
+EVALUATION COMPLETE
+======================================================================
+
+======================================================================
+PIPELINE COMPLETE
+======================================================================
+
+Results directory: results
+  Training outputs: results\training
+  Evaluation outputs: results\evaluations
+  Summary report: results\SUMMARY_REPORT.txt
+
+======================================================================

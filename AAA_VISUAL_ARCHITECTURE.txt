@@ -1,0 +1,226 @@
+# VISUAL FILE RELATIONSHIP MAP
+
+```
+                              ┌─────────────┐
+                              │    YOU      │
+                              │  (execute)  │
+                              └──────┬──────┘
+                                     │
+                                     ▼
+                        ┌────────────────────────┐
+                        │   run_project.py       │ ⭐ MASTER ORCHESTRATOR
+                        │   (WHAT YOU RUN)       │
+                        └────────────────────────┘
+                                     │
+                    ┌────────────────┼────────────────┐
+                    │                │                │
+                    ▼                ▼                ▼
+         ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+         │   TRAINING   │  │  EVALUATION  │  │    OUTPUT    │
+         └──────────────┘  └──────────────┘  └──────────────┘
+
+
+═══════════════════════════════════════════════════════════════════
+TRAINING PIPELINE
+═══════════════════════════════════════════════════════════════════
+
+                        ┌─────────────────────┐
+                        │ connect_four_env.py │
+                        │   (Game Engine)     │
+                        └──────────┬──────────┘
+                                   │ uses
+                    ┌──────────────┼──────────────┐
+                    │              │              │
+                    ▼              ▼              ▼
+            ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+            │ rl_agent.py  │ │random_agent  │ │frozen_agent  │
+            │ (BASE CLASS) │ │    .py       │ │    .py       │
+            └──────┬───────┘ └──────────────┘ └──────────────┘
+                   │                  │              │
+      ┌────────────┼────────────┐    └───────┬──────┘
+      │            │            │            │
+      ▼            ▼            ▼            │ opponents
+┌──────────┐ ┌──────────┐ ┌──────────┐     │ during
+│q_learning│ │  sarsa   │ │  monte   │◄────┘ training
+│   .py    │ │   .py    │ │ _carlo.py│
+└────┬─────┘ └────┬─────┘ └────┬─────┘
+     │            │            │
+     └────────────┼────────────┘
+                  │ saves to
+                  ▼
+          ┌──────────────┐
+          │checkpoints.py│
+          │ (Save/Load)  │
+          └──────────────┘
+
+
+═══════════════════════════════════════════════════════════════════
+EVALUATION PIPELINE
+═══════════════════════════════════════════════════════════════════
+
+          ┌──────────────┐
+          │evaluator.py  │
+          │   (CLASS)    │
+          └──────┬───────┘
+                 │ imports load_model from
+                 ▼
+          ┌──────────────┐
+          │ evaluate.py  │──► Provides: load_model() function
+          │ (UTILITIES)  │    Used by: evaluator.py
+          └──────────────┘
+                 │
+                 │ coordinates ↓
+         ┌───────┼───────────────────┐
+         │       │                   │
+         ▼       ▼                   ▼
+   ┌─────────┐ ┌────────────────┐ ┌─────────────┐
+   │  game   │ │   advanced     │ │  metrics    │
+   │analyzer │ │  _metrics.py   │ │    .py      │
+   │  .py    │ │                │ │             │
+   └────┬────┘ └────┬───────────┘ └─────┬───────┘
+        │           │                   │
+        └───────────┼───────────────────┘
+                    │ all use
+                    ▼
+          ┌──────────────────┐
+          │data_structures.py│ ◄─── BREAKS CIRCULAR IMPORTS
+          │  • GameResult    │
+          │  • MatchupResult │
+          └──────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════
+OUTPUT PIPELINE
+═══════════════════════════════════════════════════════════════════
+
+          ┌──────────────────┐
+          │ visualizations.py│
+          │    (PLOTTING)    │
+          └────────┬─────────┘
+                   │ creates
+                   ▼
+        ┌─────────────────────────┐
+        │     results/            │
+        │  ├── training/          │
+        │  │   └── checkpoints    │
+        │  ├── evaluations/       │
+        │  │   ├── JSON results   │
+        │  │   └── plots/         │
+        │  └── SUMMARY_REPORT.txt │
+        └─────────────────────────┘
+
+
+═══════════════════════════════════════════════════════════════════
+STANDALONE UTILITIES (Not part of main pipeline)
+═══════════════════════════════════════════════════════════════════
+
+┌───────────────┐     ┌─────────────────────┐     ┌─────────────────┐
+│diagnostics.py │     │plot_learning_curve  │     │run_evaluation.py│
+│               │     │        .py          │     │                 │
+│ Test game     │     │                     │     │ Alternative     │
+│ environment   │     │ Visualize training  │     │ evaluation tool │
+└───────────────┘     └─────────────────────┘     └─────────────────┘
+     Run:                   Run:                         Run:
+  python                 python                      python
+  diagnostics.py     plot_learning_curve.py    run_evaluation.py
+
+
+═══════════════════════════════════════════════════════════════════
+DEPENDENCY CHAIN (Bottom to Top)
+═══════════════════════════════════════════════════════════════════
+
+Level 1 (Foundation):
+├── connect_four_env.py       (Game rules)
+└── data_structures.py         (Shared types)
+
+Level 2 (Core Components):
+├── checkpoints.py             (Persistence)
+├── rl_agent.py                (Base agent)
+└── random_agent.py            (Simple opponent)
+
+Level 3 (Algorithms & Analysis):
+├── q_learning.py              (Inherits from rl_agent)
+├── sarsa.py                   (Inherits from rl_agent)
+├── monte_carlo.py             (Inherits from rl_agent)
+├── frozen_agent.py            (Uses checkpoints)
+├── game_analyzer.py           (Uses data_structures)
+├── metrics.py                 (Uses data_structures)
+└── advanced_metrics.py        (Uses game_analyzer, data_structures)
+
+Level 4 (Evaluation):
+├── evaluate.py                (Uses checkpoints, rl_agent)
+├── evaluator.py               (Uses evaluate, game_analyzer, advanced_metrics)
+└── visualizations.py          (Uses data_structures)
+
+Level 5 (Orchestration):
+└── run_project.py             (Uses everything)
+
+
+═══════════════════════════════════════════════════════════════════
+THE CRITICAL evaluate.py vs evaluator.py RELATIONSHIP
+═══════════════════════════════════════════════════════════════════
+
+                    ┌─────────────────────────┐
+                    │    evaluator.py         │
+                    │                         │
+                    │ Line 58:                │
+                    │ from evaluate import    │
+                    │      load_model         │
+                    └────────────┬────────────┘
+                                 │
+                                 │ DEPENDS ON
+                                 │
+                    ┌────────────▼────────────┐
+                    │    evaluate.py          │
+                    │                         │
+                    │ def load_model():       │
+                    │   - reads params.json   │
+                    │   - creates agent       │
+                    │   - loads Q-tables      │
+                    │   - returns agent       │
+                    └─────────────────────────┘
+
+     ⚠️  evaluator.py CANNOT WORK without evaluate.py ⚠️
+
+
+═══════════════════════════════════════════════════════════════════
+FILES YOU MUST COMMIT TO GIT
+═══════════════════════════════════════════════════════════════════
+
+NEW FILES (Untracked - "U" in your directory):
+✅ data_structures.py          (Breaks circular imports)
+✅ advanced_metrics.py          (Your metrics code)
+✅ evaluator.py                 (Your evaluation framework)
+✅ game_analyzer.py             (Tactical analysis)
+✅ metrics.py                   (Statistical tests)
+✅ visualizations.py            (Plotting)
+
+MODIFIED FILES (Tracked but changed - "M" in your directory):
+✅ run_project.py               (Master orchestrator)
+✅ evaluate.py                  (Minor changes, provides load_model)
+✅ checkpoints.py               (Minor changes)
+✅ connect_four_env.py          (Minor changes)
+
+KEEP ONE DOCUMENTATION FILE:
+✅ README.md 
+
+
+
+═══════════════════════════════════════════════════════════════════
+WHAT YOU ACTUALLY RUN
+═══════════════════════════════════════════════════════════════════
+
+Primary workflow:
+  $ python run_project.py --agents all --episodes 5000
+
+Quick test (2 agents, 100 episodes):
+  $ python run_project.py --agents q-learning sarsa --episodes 100
+
+Evaluation only (skip training):
+  $ python run_project.py --agents all --skip-training --eval-games 100
+
+Testing/diagnostics:
+  $ python diagnostics.py
+  $ python plot_learning_curve.py -i workspace1 -i workspace2
+  $ python run_evaluation.py --mode matchup --red-agent w1 --black-agent w2
+```
