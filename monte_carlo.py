@@ -6,40 +6,33 @@ from datetime import datetime
 import numpy as np
 from connect_four_env import ConnectFourEnv, PLAYERS
 from checkpoints import save_checkpoint, load_checkpoint
+from rl_agent import RLModel, random_argmax
 
 
-class MonteCarlo:
-    def __init__(self, env: ConnectFourEnv, opts: Namespace):
-        self.env = env
-        q_red = defaultdict(lambda: np.ones(self.env.get_number_of_actions()) * opts.initial_val)
-        q_black = defaultdict(lambda: np.ones(self.env.get_number_of_actions()) * opts.initial_val)
-        self.q = {
-            'red': q_red,
-            'black': q_black,
-        }
-
-        self.gamma = opts.gamma
-        self.alpha = opts.alpha
-        self.epsilon = opts.epsilon
-        self.episodes = opts.episodes
-
-        self.checkpoints = opts.checkpoint_dir
-        if self.checkpoints and not os.path.exists(self.checkpoints):
-            os.makedirs(self.checkpoints)
+class MonteCarlo(RLModel):
+    """
+    Monte Carlo RL agent that inherits from RLModel for consistency.
+    Uses episode-based returns rather than TD updates.
+    """
+    
+    def __init__(self, env: ConnectFourEnv, opts: Namespace = None):
+        # Initialize parent RLModel (sets up Q-tables, hyperparameters, workspace)
+        super().__init__(env, opts)
+        
+        # Monte Carlo specific: track checkpoints for curriculum learning
+        if opts:
+            self.checkpoints = opts.checkpoint_dir if hasattr(opts, 'checkpoint_dir') else None
+            if self.checkpoints and not os.path.exists(self.checkpoints):
+                os.makedirs(self.checkpoints)
+        else:
+            self.checkpoints = None
+    
+    def name(self) -> str:
+        return "monte-carlo"
     
     def get_agent_name(self) -> str:
         now_str = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
         return f"monte-carlo--{now_str}.save"
-
-    def get_q(self, current_player: int, state: str, action: Optional[int] = None) -> float:
-        player_str = PLAYERS[current_player]
-        if action is None:
-            return self.q[player_str][state]
-        return self.q[player_str][state][action]
-    
-    def set_q(self, current_player: int, state: str, action: int, value: float):
-        player_str = PLAYERS[current_player]
-        self.q[player_str][state][action] = value
 
     def explore_exploit(self, state: str, current_player: int) -> int:
         """
@@ -152,6 +145,31 @@ class MonteCarlo:
             # Store updated Q-value
             self.set_q(player, state, action, new_q)
 
+    def train_step(self, episode: int) -> dict:
+        """
+        Train step for compatibility with RLModel interface.
+        Performs one Monte Carlo episode (self-play).
+        
+        Returns:
+            Dictionary with total rewards for red and black players
+        """
+        # Generate a complete episode (self-play)
+        episode_data = self.generate_episode(opponent=None)
+        
+        # Calculate returns for each step
+        returns = self.calculate_returns(episode_data)
+        
+        # Update Q-values using first-visit MC
+        self.update_q_values(episode_data, returns, opponent=None)
+        
+        # Calculate total rewards for tracking
+        total_reward = {
+            "red": sum(r for _, p, _, r in episode_data if p == 1),
+            "black": sum(r for _, p, _, r in episode_data if p == -1)
+        }
+        
+        return total_reward
+
     def train(self, opponent=None, phase_name: str = ""):
         """
         Train using first-visit Monte Carlo with epsilon-greedy policy.
@@ -186,11 +204,33 @@ class MonteCarlo:
                                     f"monte-carlo--{checkpoint_name}--{datetime.now().strftime('%Y-%m-%d--%H-%M-%S')}.save")
             save_checkpoint(save_file, self.q)
             print(f"Saved checkpoint to {save_file}")
+    
+    def eval_step(self, env: ConnectFourEnv) -> int:
+        """
+        Select action for evaluation (greedy, no exploration).
+        Only selects from valid actions.
         
-    def evaluate(self, filepath: str):
+        Args:
+            env: Current environment state
+            
+        Returns:
+            Column index to play
         """
-        Load a trained agent from checkpoint.
-        """
-        if filepath:
-            self.q = load_checkpoint(filepath)
-            print(f"Loaded checkpoint from {filepath}")
+        state = env.get_state_key()
+        current_player = env.current_player
+        valid_actions = env.get_valid_actions()
+        
+        if not valid_actions:
+            return 0
+        
+        # Get Q-values for current state
+        q_values = self.get_q(current_player, state)
+        
+        # Mask invalid actions with very negative value
+        masked_q = np.copy(q_values)
+        for action in range(len(q_values)):
+            if action not in valid_actions:
+                masked_q[action] = -np.inf
+        
+        # Select best valid action (greedy)
+        return random_argmax(masked_q)

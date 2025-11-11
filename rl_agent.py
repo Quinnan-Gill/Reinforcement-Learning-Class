@@ -95,6 +95,36 @@ class RLModel:
         else:
             # return np.argmax(self.q[current_player][state])
             return random_argmax(self.get_q(current_player, state))
+    
+    def eval_step(self, env: ConnectFourEnv) -> int:
+        """
+        Select action for evaluation (greedy, no exploration).
+        Only selects from valid actions.
+        
+        Args:
+            env: Current environment state
+            
+        Returns:
+            Column index to play
+        """
+        state = env.get_state_key()
+        current_player = env.current_player
+        valid_actions = env.get_valid_actions()
+        
+        if not valid_actions:
+            return 0
+        
+        # Get Q-values for current state
+        q_values = self.get_q(current_player, state)
+        
+        # Mask invalid actions with very negative value
+        masked_q = np.copy(q_values)
+        for action in range(len(q_values)):
+            if action not in valid_actions:
+                masked_q[action] = -np.inf
+        
+        # Select best valid action (greedy)
+        return random_argmax(masked_q)
 
     def get_agent_name(self) -> str:
         raise NotImplementedError()

@@ -6,10 +6,12 @@ from checkpoints import load_params
 from rl_agent import RLModel
 from q_learning import QLearning
 from sarsa import Sarsa
+from monte_carlo import MonteCarlo
 
 ALGO_MAP = {
     "q-learning": QLearning,
-    "sarsa": Sarsa
+    "sarsa": Sarsa,
+    "monte-carlo": MonteCarlo
 }
 
 def load_model(workspace: str, env: ConnectFourEnv = None):
@@ -38,6 +40,7 @@ def load_model(workspace: str, env: ConnectFourEnv = None):
             env.connect_n == env_params["connect_n"]
         )
 
+    # All agents now inherit from RLModel - no special handling needed
     agent: RLModel = AgentType(env)
     agent.load_workspace(workspace)
 
