@@ -25,6 +25,7 @@ from connect_four_env import ConnectFourEnv
 from rl_agent import RLModel, random_argmax
 from q_learning import QLearning
 from sarsa import Sarsa
+from expected_sarsa import ExpectedSarsa
 from monte_carlo import MonteCarlo
 from random_agent import RandomAgent
 from frozen_agent import FrozenAgent
@@ -540,6 +541,14 @@ def train_agent(
         elif training_mode == "curriculum":
             return train_tabular_agent_curriculum(Sarsa, "sarsa", env, opts, output_dir)
     
+    elif algorithm == "expected-sarsa":
+        if training_mode == "self-play":
+            return train_tabular_agent_selfplay(ExpectedSarsa, "expected-sarsa", env, opts, output_dir)
+        elif training_mode == "vs-random":
+            return train_tabular_agent_vs_random(ExpectedSarsa, "expected-sarsa", env, opts, output_dir)
+        elif training_mode == "curriculum":
+            return train_tabular_agent_curriculum(ExpectedSarsa, "expected-sarsa", env, opts, output_dir)
+    
     elif algorithm == "monte-carlo":
         # Monte Carlo only supports curriculum mode properly
         return train_monte_carlo_curriculum(env, opts, output_dir)
@@ -752,7 +761,7 @@ def main():
     parser.add_argument(
         '--agents',
         nargs='+',
-        choices=['q-learning', 'sarsa', 'monte-carlo', 'dqn', 'all'],
+        choices=['q-learning', 'sarsa', 'expected-sarsa', 'monte-carlo', 'dqn', 'all'],
         default=['all'],
         help='Which agents to train (default: all)'
     )
@@ -903,7 +912,7 @@ def main():
     
     # Expand 'all' agents
     if 'all' in opts.agents:
-        opts.agents = ['q-learning', 'sarsa', 'monte-carlo']
+        opts.agents = ['q-learning', 'sarsa', 'expected-sarsa', 'monte-carlo']
     
     # Create output directories
     output_dir = Path(opts.output_dir)
@@ -989,7 +998,7 @@ def main():
         for agent_dir in opts.agent_dirs:
             agent_name = Path(agent_dir).name
             # Try to extract algorithm from directory name
-            for algo in ['q-learning', 'sarsa', 'monte-carlo']:
+            for algo in ['q-learning', 'sarsa', 'expected-sarsa', 'monte-carlo']:
                 if algo in agent_name.lower():
                     agent_paths[algo] = agent_dir
                     print(f"  {algo}: {agent_dir}")

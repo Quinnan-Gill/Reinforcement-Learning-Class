@@ -5,7 +5,7 @@ from datetime import datetime
 from connect_four_env import ConnectFourEnv, PLAYERS
 from rl_agent import RLModel, random_argmax
 
-class Sarsa(RLModel):
+class ExpectedSarsa(RLModel):
     def __init__(self, env: ConnectFourEnv, opts: Namespace = None):
         super().__init__(env, opts)
 
@@ -42,7 +42,7 @@ class Sarsa(RLModel):
 
                 expected_q = sum(p * q for p, q in zip(probs, q_values))
                 td_target = reward + self.gamma * expected_q
-                
+
             td_error = td_target - (
                 self.get_q(current_player, state, action=action)
             )
