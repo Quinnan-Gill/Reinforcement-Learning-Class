@@ -12,7 +12,7 @@ This script orchestrates complete training and evaluation workflows:
 
 import os
 import sys
-import glob
+import logging
 from datetime import datetime
 from pathlib import Path
 from argparse import ArgumentParser, Namespace
@@ -37,6 +37,7 @@ from game_analyzer import GameAnalyzer, generate_game_quality_report
 from visualizations import Visualizer
 from advanced_metrics import TrainingTimer, generate_q_table_report
 
+logger = logging.getLogger("Run Project")
 
 # =============================================================================
 # TRAINING FUNCTIONS
@@ -58,12 +59,12 @@ def train_tabular_agent_selfplay(
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     workspace = Path(output_dir) / f"{agent_name}_selfplay_{timestamp}"
     
-    print(f"\n{'='*70}")
-    print(f"Training {agent_name.upper()} - Self-Play Mode")
-    print(f"{'='*70}")
-    print(f"Output: {workspace}")
-    print(f"Episodes: {opts.episodes}")
-    print(f"Ensemble size: {opts.num_agents}")
+    logger.info(f"\n{'='*70}")
+    logger.info(f"Training {agent_name.upper()} - Self-Play Mode")
+    logger.info(f"{'='*70}")
+    logger.info(f"Output: {workspace}")
+    logger.info(f"Episodes: {opts.episodes}")
+    logger.info(f"Ensemble size: {opts.num_agents}")
     
     # Create workspace
     workspace.mkdir(parents=True, exist_ok=True)
@@ -112,7 +113,7 @@ def train_tabular_agent_selfplay(
     np.save(workspace / "best_red_agent", dict(best_red_agent))
     np.save(workspace / "best_black_agent", dict(best_black_agent))
     
-    print(f"✓ Saved to: {workspace}")
+    logger.info(f"✓ Saved to: {workspace}")
     
     return str(workspace)
 
@@ -134,11 +135,11 @@ def train_tabular_agent_vs_random(
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     workspace = Path(output_dir) / f"{agent_name}_vsrandom_{timestamp}"
     
-    print(f"\n{'='*70}")
-    print(f"Training {agent_name.upper()} - vs Random Opponent")
-    print(f"{'='*70}")
-    print(f"Output: {workspace}")
-    print(f"Episodes: {opts.episodes}")
+    logger.info(f"\n{'='*70}")
+    logger.info(f"Training {agent_name.upper()} - vs Random Opponent")
+    logger.info(f"{'='*70}")
+    logger.info(f"Output: {workspace}")
+    logger.info(f"Episodes: {opts.episodes}")
     
     # Create workspace
     workspace.mkdir(parents=True, exist_ok=True)
@@ -198,7 +199,7 @@ def train_tabular_agent_vs_random(
     np.save(workspace / "best_red_agent", dict(agent.q['red']))
     np.save(workspace / "best_black_agent", dict(agent.q['black']))
     
-    print(f"✓ Saved to: {workspace}")
+    logger.info(f"✓ Saved to: {workspace}")
     
     return str(workspace)
 
@@ -224,15 +225,15 @@ def train_tabular_agent_curriculum(
     base_workspace = Path(output_dir) / f"{agent_name}_curriculum_{timestamp}"
     base_workspace.mkdir(parents=True, exist_ok=True)
     
-    print(f"\n{'='*70}")
-    print(f"Training {agent_name.upper()} - Curriculum Mode")
-    print(f"{'='*70}")
-    print(f"Output: {base_workspace}")
-    print(f"Episodes per phase: {opts.episodes}")
-    print(f"Curriculum iterations: {opts.curriculum_iterations}")
+    logger.info(f"\n{'='*70}")
+    logger.info(f"Training {agent_name.upper()} - Curriculum Mode")
+    logger.info(f"{'='*70}")
+    logger.info(f"Output: {base_workspace}")
+    logger.info(f"Episodes per phase: {opts.episodes}")
+    logger.info(f"Curriculum iterations: {opts.curriculum_iterations}")
     
     # ===== Phase 1: vs Random =====
-    print(f"\n--- Phase 1: Training vs Random Opponent ---")
+    logger.info(f"\n--- Phase 1: Training vs Random Opponent ---")
     phase1_workspace = base_workspace / "phase1_vsrandom"
     phase1_workspace.mkdir(exist_ok=True)
     
@@ -271,10 +272,10 @@ def train_tabular_agent_curriculum(
     # Save Phase 1 checkpoint
     np.save(phase1_workspace / "best_red_agent", dict(agent_phase1.q['red']))
     np.save(phase1_workspace / "best_black_agent", dict(agent_phase1.q['black']))
-    print(f"\n✓ Phase 1 complete")
+    logger.info(f"\n✓ Phase 1 complete")
     
     # ===== Phase 2: Self-Play =====
-    print(f"\n--- Phase 2: Training via Self-Play ---")
+    logger.info(f"\n--- Phase 2: Training via Self-Play ---")
     phase2_workspace = base_workspace / "phase2_selfplay"
     phase2_workspace.mkdir(exist_ok=True)
     
@@ -343,7 +344,7 @@ def train_tabular_agent_curriculum(
     previous_workspace = phase3_workspace
     
     for iteration in range(1, opts.curriculum_iterations + 1):
-        print(f"\n--- Iteration {iteration}: Training vs Previous Best ---")
+        logger.info(f"\n--- Iteration {iteration}: Training vs Previous Best ---")
         iter_workspace = base_workspace / f"iteration{iteration}"
         iter_workspace.mkdir(exist_ok=True)
         
@@ -390,8 +391,8 @@ def train_tabular_agent_curriculum(
         # Update previous workspace for next iteration
         previous_workspace = iter_workspace
     
-    print(f"\n✓ Full curriculum training complete ({3 + opts.curriculum_iterations} phases total)")
-    print(f"✓ Final checkpoint: {previous_workspace}")
+    logger.info(f"\n✓ Full curriculum training complete ({3 + opts.curriculum_iterations} phases total)")
+    logger.info(f"✓ Final checkpoint: {previous_workspace}")
     
     # Return final iteration workspace
     return str(previous_workspace)
@@ -413,15 +414,15 @@ def train_monte_carlo_curriculum(
     base_workspace = Path(output_dir) / f"monte-carlo_curriculum_{timestamp}"
     base_workspace.mkdir(parents=True, exist_ok=True)
     
-    print(f"\n{'='*70}")
-    print(f"Training MONTE CARLO - Curriculum Mode")
-    print(f"{'='*70}")
-    print(f"Output: {base_workspace}")
-    print(f"Episodes per phase: {opts.episodes}")
-    print(f"Curriculum iterations: {opts.curriculum_iterations}")
+    logger.info(f"\n{'='*70}")
+    logger.info(f"Training MONTE CARLO - Curriculum Mode")
+    logger.info(f"{'='*70}")
+    logger.info(f"Output: {base_workspace}")
+    logger.info(f"Episodes per phase: {opts.episodes}")
+    logger.info(f"Curriculum iterations: {opts.curriculum_iterations}")
     
     # ===== Phase 1: vs Random =====
-    print(f"\n--- Phase 1: Training vs Random Opponent ---")
+    logger.info(f"\n--- Phase 1: Training vs Random Opponent ---")
     phase1_workspace = base_workspace / "phase1_vsrandom"
     phase1_workspace.mkdir(exist_ok=True)
     
@@ -437,10 +438,10 @@ def train_monte_carlo_curriculum(
     # Save in workspace format
     np.save(phase1_workspace / "best_red_agent", dict(agent_phase1.q['red']))
     np.save(phase1_workspace / "best_black_agent", dict(agent_phase1.q['black']))
-    print(f"✓ Phase 1 complete")
+    logger.info(f"✓ Phase 1 complete")
     
     # ===== Phase 2: Self-Play =====
-    print(f"\n--- Phase 2: Training via Self-Play ---")
+    logger.info(f"\n--- Phase 2: Training via Self-Play ---")
     phase2_workspace = base_workspace / "phase2_selfplay"
     phase2_workspace.mkdir(exist_ok=True)
     
@@ -455,10 +456,10 @@ def train_monte_carlo_curriculum(
     # Save in workspace format
     np.save(phase2_workspace / "best_red_agent", dict(agent_phase2.q['red']))
     np.save(phase2_workspace / "best_black_agent", dict(agent_phase2.q['black']))
-    print(f"✓ Phase 2 complete")
+    logger.info(f"✓ Phase 2 complete")
     
     # ===== Phase 3: vs Phase 1 Checkpoint =====
-    print(f"\n--- Phase 3: Training vs Phase 1 Checkpoint ---")
+    logger.info(f"\n--- Phase 3: Training vs Phase 1 Checkpoint ---")
     phase3_workspace = base_workspace / "phase3_vscheckpoint"
     phase3_workspace.mkdir(exist_ok=True)
     
@@ -476,13 +477,13 @@ def train_monte_carlo_curriculum(
     # Save in workspace format
     np.save(phase3_workspace / "best_red_agent", dict(agent_phase3.q['red']))
     np.save(phase3_workspace / "best_black_agent", dict(agent_phase3.q['black']))
-    print(f"✓ Phase 3 complete")
+    logger.info(f"✓ Phase 3 complete")
     
     # ===== Iterative Curriculum: Train vs Previous Best =====
     previous_workspace = phase3_workspace
     
     for iteration in range(1, opts.curriculum_iterations + 1):
-        print(f"\n--- Iteration {iteration}: Training vs Previous Best ---")
+        logger.info(f"\n--- Iteration {iteration}: Training vs Previous Best ---")
         iter_workspace = base_workspace / f"iteration{iteration}"
         iter_workspace.mkdir(exist_ok=True)
         
@@ -500,13 +501,13 @@ def train_monte_carlo_curriculum(
         # Save in workspace format
         np.save(iter_workspace / "best_red_agent", dict(agent_iter.q['red']))
         np.save(iter_workspace / "best_black_agent", dict(agent_iter.q['black']))
-        print(f"✓ Iteration {iteration} complete")
+        logger.info(f"✓ Iteration {iteration} complete")
         
         # Update for next iteration
         previous_workspace = iter_workspace
     
-    print(f"\n✓ Full curriculum training complete ({3 + opts.curriculum_iterations} phases total)")
-    print(f"✓ Final checkpoint: {previous_workspace}")
+    logger.info(f"\n✓ Full curriculum training complete ({3 + opts.curriculum_iterations} phases total)")
+    logger.info(f"✓ Final checkpoint: {previous_workspace}")
     
     # Return final workspace
     return str(previous_workspace)
@@ -525,41 +526,19 @@ def train_agent(
     Returns:
         Path to trained agent workspace/checkpoint
     """
-    if algorithm == "q-learning":
-        if training_mode == "self-play":
-            return train_tabular_agent_selfplay(QLearning, "q-learning", env, opts, output_dir)
-        elif training_mode == "vs-random":
-            return train_tabular_agent_vs_random(QLearning, "q-learning", env, opts, output_dir)
-        elif training_mode == "curriculum":
-            return train_tabular_agent_curriculum(QLearning, "q-learning", env, opts, output_dir)
-    
-    elif algorithm == "sarsa":
-        if training_mode == "self-play":
-            return train_tabular_agent_selfplay(Sarsa, "sarsa", env, opts, output_dir)
-        elif training_mode == "vs-random":
-            return train_tabular_agent_vs_random(Sarsa, "sarsa", env, opts, output_dir)
-        elif training_mode == "curriculum":
-            return train_tabular_agent_curriculum(Sarsa, "sarsa", env, opts, output_dir)
-    
-    elif algorithm == "expected-sarsa":
-        if training_mode == "self-play":
-            return train_tabular_agent_selfplay(ExpectedSarsa, "expected-sarsa", env, opts, output_dir)
-        elif training_mode == "vs-random":
-            return train_tabular_agent_vs_random(ExpectedSarsa, "expected-sarsa", env, opts, output_dir)
-        elif training_mode == "curriculum":
-            return train_tabular_agent_curriculum(ExpectedSarsa, "expected-sarsa", env, opts, output_dir)
-    
-    elif algorithm == "monte-carlo":
-        # Monte Carlo only supports curriculum mode properly
-        return train_monte_carlo_curriculum(env, opts, output_dir)
-    
-    elif algorithm == "dqn":
-        print(f"ERROR: DQN not yet implemented")
-        sys.exit(1)
-    
-    else:
-        print(f"ERROR: Unknown algorithm: {algorithm}")
-        sys.exit(1)
+    training_map = {
+        "self-play": train_tabular_agent_selfplay,
+        "vs-random": train_tabular_agent_vs_random,
+        "curriculum": train_tabular_agent_curriculum,
+    }
+    agent_map = {
+        "q-learning": QLearning,
+        "sarsa": Sarsa,
+        "expected-sarsa": ExpectedSarsa
+    }
+
+    agent = agent_map[algorithm]
+    return training_map[training_mode](agent, algorithm, env, opts, output_dir)
 
 
 # =============================================================================
@@ -582,11 +561,11 @@ def run_pairwise_evaluations(
     eval_dir = Path(output_dir) / f"pairwise_evaluations_{timestamp}"
     eval_dir.mkdir(parents=True, exist_ok=True)
     
-    print(f"\n{'='*70}")
-    print(f"Running Pairwise Evaluations")
-    print(f"{'='*70}")
-    print(f"Agents: {list(agent_paths.keys())}")
-    print(f"Games per matchup: {opts.eval_games}")
+    logger.info(f"\n{'='*70}")
+    logger.info(f"Running Pairwise Evaluations")
+    logger.info(f"{'='*70}")
+    logger.info(f"Agents: {list(agent_paths.keys())}")
+    logger.info(f"Games per matchup: {opts.eval_games}")
     
     evaluator = Evaluator(env, output_dir=str(eval_dir))
     
@@ -604,7 +583,7 @@ def run_pairwise_evaluations(
                 continue
             
             matchup_name = f"{agent1}_vs_{agent2}"
-            print(f"\n--- Evaluating: {matchup_name} ---")
+            logger.info(f"\n--- Evaluating: {matchup_name} ---")
             
             # Run matchup
             matchup = evaluator.evaluate_matchup(
@@ -640,13 +619,13 @@ def run_pairwise_evaluations(
                 'analyses': game_analyses
             }
             
-            print(f"✓ {matchup_name} complete")
+            logger.info(f"✓ {matchup_name} complete")
     
     # Save all results
     evaluator.save_results(filename="all_pairwise_results.json")
     
-    print(f"\n✓ All pairwise evaluations complete")
-    print(f"✓ Results saved to: {eval_dir}")
+    logger.info(f"\n✓ All pairwise evaluations complete")
+    logger.info(f"✓ Results saved to: {eval_dir}")
     
     return results
 
@@ -667,11 +646,11 @@ def run_tournament(
     tournament_dir = Path(output_dir) / f"tournament_{timestamp}"
     tournament_dir.mkdir(parents=True, exist_ok=True)
     
-    print(f"\n{'='*70}")
-    print(f"Running Tournament")
-    print(f"{'='*70}")
-    print(f"Agents: {list(agent_paths.keys())}")
-    print(f"Games per matchup: {opts.eval_games}")
+    logger.info(f"\n{'='*70}")
+    logger.info(f"Running Tournament")
+    logger.info(f"{'='*70}")
+    logger.info(f"Agents: {list(agent_paths.keys())}")
+    logger.info(f"Games per matchup: {opts.eval_games}")
     
     evaluator = Evaluator(env, output_dir=str(tournament_dir))
     
@@ -693,8 +672,8 @@ def run_tournament(
     # Save results
     evaluator.save_results(filename="tournament_results.json")
     
-    print(f"\n✓ Tournament complete")
-    print(f"✓ Results saved to: {tournament_dir}")
+    logger.info(f"\n✓ Tournament complete")
+    logger.info(f"✓ Results saved to: {tournament_dir}")
     
     return tournament_results
 
@@ -743,7 +722,7 @@ def generate_summary_report(
         f.write(f"Report generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         f.write("="*70 + "\n")
     
-    print(f"\n✓ Summary report saved to: {report_path}")
+    logger.info(f"\n✓ Summary report saved to: {report_path}")
 
 
 # =============================================================================
@@ -907,8 +886,22 @@ def main():
         default='results',
         help='Base output directory (default: results)'
     )
+
+    parser.add_argument(
+        '--log-level',
+        choices=['info', 'warning', 'error'],
+        default='info',
+        help='Log level (for filtering logs)'
+    )
     
     opts = parser.parse_args()
+
+    log_map = {
+        'info': logging.INFO,
+        'warning': logging.WARNING,
+        'error': logging.ERROR
+    }
+    logging.basicConfig(level=log_map[opts.log_level])
     
     # Expand 'all' agents
     if 'all' in opts.agents:
@@ -932,15 +925,15 @@ def main():
         move_cost=opts.move_cost
     )
     
-    print("="*70)
-    print("CONNECT FOUR RL MASTER PIPELINE")
-    print("="*70)
-    print(f"Environment: {opts.rows}x{opts.columns} Connect-{opts.connect_n}")
-    print(f"Agents: {', '.join(opts.agents)}")
-    print(f"Training mode: {opts.training_mode}")
-    print(f"Episodes: {opts.episodes}")
-    print(f"Output directory: {output_dir}")
-    print("="*70)
+    logger.info("="*70)
+    logger.info("CONNECT FOUR RL MASTER PIPELINE")
+    logger.info("="*70)
+    logger.info(f"Environment: {opts.rows}x{opts.columns} Connect-{opts.connect_n}")
+    logger.info(f"Agents: {', '.join(opts.agents)}")
+    logger.info(f"Training mode: {opts.training_mode}")
+    logger.info(f"Episodes: {opts.episodes}")
+    logger.info(f"Output directory: {output_dir}")
+    logger.info("="*70)
     
     # =================================================================
     # TRAINING PHASE
@@ -949,13 +942,13 @@ def main():
     training_times = {}  # Track training time per agent
     
     if not opts.skip_training:
-        print(f"\n{'='*70}")
-        print("PHASE 1: TRAINING")
-        print(f"{'='*70}")
+        logger.info(f"\n{'='*70}")
+        logger.info("PHASE 1: TRAINING")
+        logger.info(f"{'='*70}")
         
         for agent in opts.agents:
             try:
-                print(f"\nStarting training: {agent}")
+                logger.info(f"\nStarting training: {agent}")
                 with TrainingTimer() as timer:
                     workspace = train_agent(
                         algorithm=agent,
@@ -966,34 +959,34 @@ def main():
                     )
                 agent_paths[agent] = workspace
                 training_times[agent] = timer.elapsed
-                print(f"✓ {agent} training completed in {timer.elapsed:.2f} seconds ({timer.elapsed/60:.1f} minutes)")
+                logger.info(f"✓ {agent} training completed in {timer.elapsed:.2f} seconds ({timer.elapsed/60:.1f} minutes)")
             except Exception as e:
-                print(f"\nERROR training {agent}: {e}")
+                logger.info(f"\nERROR training {agent}: {e}")
                 import traceback
-                traceback.print_exc()
+                traceback.logger.info_exc()
                 continue
         
         if not agent_paths:
-            print("\nERROR: No agents were successfully trained")
+            logger.info("\nERROR: No agents were successfully trained")
             sys.exit(1)
         
-        print(f"\n{'='*70}")
-        print("TRAINING COMPLETE")
-        print(f"{'='*70}")
+        logger.info(f"\n{'='*70}")
+        logger.info("TRAINING COMPLETE")
+        logger.info(f"{'='*70}")
         for agent_name, path in agent_paths.items():
             train_time = training_times.get(agent_name, 0)
-            print(f"  {agent_name}: {path}")
-            print(f"    Training time: {train_time:.2f}s ({train_time/60:.1f} min)")
+            logger.info(f"  {agent_name}: {path}")
+            logger.info(f"    Training time: {train_time:.2f}s ({train_time/60:.1f} min)")
     
     else:
         # Use pre-trained agents
         if not opts.agent_dirs:
-            print("ERROR: --agent-dirs required when using --skip-training")
+            logger.info("ERROR: --agent-dirs required when using --skip-training")
             sys.exit(1)
         
-        print(f"\n{'='*70}")
-        print("USING PRE-TRAINED AGENTS")
-        print(f"{'='*70}")
+        logger.info(f"\n{'='*70}")
+        logger.info("USING PRE-TRAINED AGENTS")
+        logger.info(f"{'='*70}")
         
         for agent_dir in opts.agent_dirs:
             agent_name = Path(agent_dir).name
@@ -1001,23 +994,23 @@ def main():
             for algo in ['q-learning', 'sarsa', 'expected-sarsa', 'monte-carlo']:
                 if algo in agent_name.lower():
                     agent_paths[algo] = agent_dir
-                    print(f"  {algo}: {agent_dir}")
+                    logger.info(f"  {algo}: {agent_dir}")
                     break
             else:
                 # Fallback: use directory name as agent name
                 agent_paths[agent_name] = agent_dir
-                print(f"  {agent_name}: {agent_dir}")
+                logger.info(f"  {agent_name}: {agent_dir}")
     
     # =================================================================
     # EVALUATION PHASE
     # =================================================================
     if not opts.skip_evaluation:
         if len(agent_paths) < 2:
-            print("\nWarning: Need at least 2 agents for evaluation, skipping")
+            logger.info("\nWarning: Need at least 2 agents for evaluation, skipping")
         else:
-            print(f"\n{'='*70}")
-            print("PHASE 2: EVALUATION")
-            print(f"{'='*70}")
+            logger.info(f"\n{'='*70}")
+            logger.info("PHASE 2: EVALUATION")
+            logger.info(f"{'='*70}")
             
             try:
                 # Pairwise evaluations
@@ -1044,26 +1037,26 @@ def main():
                     output_dir=str(output_dir)
                 )
                 
-                print(f"\n{'='*70}")
-                print("EVALUATION COMPLETE")
-                print(f"{'='*70}")
+                logger.info(f"\n{'='*70}")
+                logger.info("EVALUATION COMPLETE")
+                logger.info(f"{'='*70}")
             
             except Exception as e:
-                print(f"\nERROR during evaluation: {e}")
+                logger.info(f"\nERROR during evaluation: {e}")
                 import traceback
-                traceback.print_exc()
+                traceback.logger.info_exc()
     
     # =================================================================
     # FINAL SUMMARY
     # =================================================================
-    print(f"\n{'='*70}")
-    print("PIPELINE COMPLETE")
-    print(f"{'='*70}")
-    print(f"\nResults directory: {output_dir}")
-    print(f"  Training outputs: {training_dir}")
-    print(f"  Evaluation outputs: {eval_dir}")
-    print(f"  Summary report: {output_dir / 'SUMMARY_REPORT.txt'}")
-    print("\n" + "="*70)
+    logger.info(f"\n{'='*70}")
+    logger.info("PIPELINE COMPLETE")
+    logger.info(f"{'='*70}")
+    logger.info(f"\nResults directory: {output_dir}")
+    logger.info(f"  Training outputs: {training_dir}")
+    logger.info(f"  Evaluation outputs: {eval_dir}")
+    logger.info(f"  Summary report: {output_dir / 'SUMMARY_REPORT.txt'}")
+    logger.info("\n" + "="*70)
 
 
 if __name__ == '__main__':

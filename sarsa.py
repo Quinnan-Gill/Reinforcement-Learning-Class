@@ -26,23 +26,24 @@ class Sarsa(RLModel):
         total_reward = defaultdict(float)
         while not done:
             _, reward, done, _ = self.env.make_move(action)
+            next_player = self.env.current_player
             next_state = self.env.get_state_key()
-            next_action = self.select_action(state, current_player)
-
+            next_action = self.select_action(next_state, next_player)
+            
             if done:
                 td_target = reward
             else:
                 td_target = reward + self.gamma * (
-                    self.get_q(current_player, state, action=next_action)
+                    self.get_q(next_player, next_state, action=next_action)
                 )
-            td_error = td_target - (
-                self.get_q(current_player, state, action=action)
-            )
+            
+            old_q = self.get_q(current_player, state, action=action)
+            new_q = old_q + self.alpha * (td_target - old_q)
 
-            self.set_q(current_player, state, action, value=self.alpha * td_error)
+            self.set_q(current_player, state, action, value=new_q)
             total_reward[PLAYERS[current_player]] += reward
 
-            current_player = self.env.current_player
+            current_player = next_player
             state = next_state
             action = next_action
         return total_reward

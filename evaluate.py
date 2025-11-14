@@ -6,11 +6,13 @@ from checkpoints import load_params
 from rl_agent import RLModel
 from q_learning import QLearning
 from sarsa import Sarsa
+from expected_sarsa import ExpectedSarsa
 from monte_carlo import MonteCarlo
 
 ALGO_MAP = {
     "q-learning": QLearning,
     "sarsa": Sarsa,
+    "expected-sarsa": ExpectedSarsa,
     "monte-carlo": MonteCarlo
 }
 

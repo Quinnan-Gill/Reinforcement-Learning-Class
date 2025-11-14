@@ -31,19 +31,23 @@ class QLearning(RLModel):
 
             _, reward, done, _ = self.env.make_move(action)
             next_state = self.env.get_state_key()
+            next_player = self.env.current_player
 
-            best_next_action = random_argmax(self.get_q(current_player, state))
-            td_target = reward + self.gamma * (
-                self.get_q(current_player, state, action=best_next_action)
-            )
-            td_error = td_target - (
-                self.get_q(current_player, state, action=action)
-            )
+            if done:
+                td_target = reward
+            else:
+                best_next_action = random_argmax(self.get_q(next_player, next_state))
+                td_target = reward + self.gamma * (
+                    self.get_q(next_player, next_state, action=best_next_action)
+                )
 
-            self.set_q(current_player, state, action, value=self.alpha * td_error)
+            old_q = self.get_q(current_player, state, action-action)
+            new_q = old_q + self.alpha * (td_target - old_q)
+
+            self.set_q(current_player, state, action, value=new_q)
             total_reward[PLAYERS[current_player]] += reward
 
-            current_player = self.env.current_player
+            current_player = next_player
             state = next_state
         return total_reward
     
