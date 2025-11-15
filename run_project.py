@@ -534,7 +534,8 @@ def train_agent(
     agent_map = {
         "q-learning": QLearning,
         "sarsa": Sarsa,
-        "expected-sarsa": ExpectedSarsa
+        "expected-sarsa": ExpectedSarsa,
+        "monte-carlo": MonteCarlo,
     }
 
     agent = agent_map[algorithm]
